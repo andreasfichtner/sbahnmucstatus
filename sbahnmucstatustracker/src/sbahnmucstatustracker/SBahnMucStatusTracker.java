@@ -10,7 +10,8 @@ public class SBahnMucStatusTracker {
 	private static final long INTERVAL = 60000; 
 	static boolean stopped = false;
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
+		Class.forName("org.sqlite.JDBC");
 		SBahnMucStatusTracker tracker = new SBahnMucStatusTracker();
 		tracker.work();
 	}
