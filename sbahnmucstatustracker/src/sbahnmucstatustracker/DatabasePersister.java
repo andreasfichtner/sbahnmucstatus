@@ -12,8 +12,8 @@ import java.sql.Statement;
 public class DatabasePersister {
 
 	private final static String HISTORY_TABLE = "HISTORY";
-	private static final String CREATE_STATEMENT_PATH = "create_statement.sql";
-	private static final String INSERT_STATEMENT_PATH = "insert_statement.sql";
+	private static final String CREATE_STATEMENT_PATH = "sql/create_statement.sql";
+	private static final String INSERT_STATEMENT_PATH = "sql/insert_statement.sql";
 
 	/*
 	 * CREATION
@@ -26,7 +26,6 @@ public class DatabasePersister {
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery("SELECT * FROM "
 						+ HISTORY_TABLE);) {
-			Class.forName("org.sqlite.JDBC");
 		} catch (Exception e) {
 			createDatabase();
 		}
@@ -36,7 +35,6 @@ public class DatabasePersister {
 		try (Connection connection = DriverManager
 				.getConnection("jdbc:sqlite:database.db");
 				Statement statement = connection.createStatement();) {
-			Class.forName("org.sqlite.JDBC");
 			String createStatement = getFileContent(CREATE_STATEMENT_PATH);
 
 			if (createStatement != null) {
@@ -72,7 +70,6 @@ public class DatabasePersister {
 	public static void insertStatus(SBahnStatus status) throws ClassNotFoundException, SQLException {
 		String insertStatement = getFileContent(INSERT_STATEMENT_PATH);
 
-		Class.forName("org.sqlite.JDBC");  
 		Connection connection = DriverManager.getConnection("jdbc:sqlite:database.db");
 		PreparedStatement statement = connection.prepareStatement(insertStatement);
 		statement.setString(1, status.getLine());

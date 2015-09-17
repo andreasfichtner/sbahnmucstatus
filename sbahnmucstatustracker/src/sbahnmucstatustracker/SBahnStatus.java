@@ -44,7 +44,7 @@ public class SBahnStatus {
 	}
 	
 	public static String getTimestampAsString(Calendar c) {	
-		SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
+		SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss");
 		return format.format(c.getTime());
 	}
 }
