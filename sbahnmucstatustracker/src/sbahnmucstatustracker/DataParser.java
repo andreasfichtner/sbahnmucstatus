@@ -15,7 +15,6 @@ public class DataParser {
 		Matcher m = p.matcher(website);
 		while (m.find()) {
 			list.add(new SBahnStatus(m.group(2), timestamp, Integer.parseInt(m.group(1))));
-			System.out.println(list.getLast().shortInfo());
 		}
 		
 		return list;
