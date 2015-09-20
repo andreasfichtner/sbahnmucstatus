@@ -11,6 +11,7 @@ import java.sql.Statement;
 
 public class DatabasePersister {
 
+	public static final String DB_CONNECTION_STRING = "jdbc:sqlite:database.db";
 	private final static String HISTORY_TABLE = "HISTORY";
 	private static final String CREATE_STATEMENT_PATH = "sql/create_statement.sql";
 	private static final String INSERT_STATEMENT_PATH = "sql/insert_statement.sql";
@@ -22,7 +23,7 @@ public class DatabasePersister {
 	public static void ensureDatabaseCreated() {
 
 		try (Connection connection = DriverManager
-				.getConnection("jdbc:sqlite:database.db");
+				.getConnection(DB_CONNECTION_STRING);
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery("SELECT * FROM "
 						+ HISTORY_TABLE);) {
@@ -33,7 +34,7 @@ public class DatabasePersister {
 
 	private static void createDatabase() {
 		try (Connection connection = DriverManager
-				.getConnection("jdbc:sqlite:database.db");
+				.getConnection(DB_CONNECTION_STRING);
 				Statement statement = connection.createStatement();) {
 			String createStatement = getFileContent(CREATE_STATEMENT_PATH);
 
@@ -70,7 +71,7 @@ public class DatabasePersister {
 	public static void insertStatus(SBahnStatus status) throws ClassNotFoundException, SQLException {
 		String insertStatement = getFileContent(INSERT_STATEMENT_PATH);
 
-		Connection connection = DriverManager.getConnection("jdbc:sqlite:database.db");
+		Connection connection = DriverManager.getConnection(DB_CONNECTION_STRING);
 		PreparedStatement statement = connection.prepareStatement(insertStatement);
 		statement.setString(1, status.getLine());
 		statement.setString(2, SBahnStatus.getTimestampAsString(status.getTimestamp()));
