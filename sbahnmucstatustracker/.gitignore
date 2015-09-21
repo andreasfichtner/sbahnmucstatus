@@ -1,3 +1,5 @@
 /bin/
 /database.db-journal
 /database.db
+/sqlite-jdbc-3.8.11.1.jar
+/export.csv
