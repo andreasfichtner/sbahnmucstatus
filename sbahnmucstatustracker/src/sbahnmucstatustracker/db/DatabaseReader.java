@@ -74,7 +74,7 @@ public class DatabaseReader {
 				if (index == index2) {
 					statement.append("PERCENT");
 				} else {
-					statement.append("0");
+					statement.append("NULL");
 				}
 
 				statement.append(" AS ");
