@@ -13,22 +13,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * @author Don Burleson
- *
- */
 public class DataExport {
 
 	private static final String SQL_SELECT_LINES = "SELECT DISTINCT LINE FROM HISTORY ORDER BY LINE";
 	private static final String FILENAME = "export.csv";
 	private static final String DELIMITER = ";";
 	Connection connection;
-	
-	public static void main(String[] args) throws SQLException, FileNotFoundException, UnsupportedEncodingException {
+
+	public static void main(String[] args) throws SQLException,
+			FileNotFoundException, UnsupportedEncodingException {
 		new DataExport().start();
 	}
 
-	public void start() throws SQLException, FileNotFoundException, UnsupportedEncodingException {
+	public void start() throws SQLException, FileNotFoundException,
+			UnsupportedEncodingException {
 		connection = DriverManager
 				.getConnection(DatabasePersister.DB_CONNECTION_STRING);
 		DatabasePersister.ensureDatabaseCreated();
@@ -36,48 +34,50 @@ public class DataExport {
 		List<String> lines = fetchLines();
 		writeData(lines);
 		connection.close();
-		}
+	}
 
-	protected void writeData(List<String> lines) throws FileNotFoundException, UnsupportedEncodingException {
+	protected void writeData(List<String> lines) throws FileNotFoundException,
+			UnsupportedEncodingException {
 		PrintWriter writer = new PrintWriter(FILENAME, "UTF-8");
-		
+
 		String queryStatement = createQueryStatementToLoadData(lines);
-		try (	Statement statement = connection.createStatement();
+		try (Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery(queryStatement);) {
-			
+
 			// Write header row
 			writer.print("\"Time\"");
 			for (String line : lines) {
 				writer.print(DELIMITER + "\"" + line + "\"");
 			}
 			writer.println(DELIMITER);
-			
+
 			// Write content
 			ResultSetMetaData rsmd = resultSet.getMetaData();
 			int columnsNumber = rsmd.getColumnCount();
-			
+
 			while (resultSet.next()) {
 				writer.print("\"");
 				writer.print(resultSet.getString(1));
 				writer.print("\"");
-				
-				for(int i = 2; i <= columnsNumber; i++) {
+
+				for (int i = 2; i <= columnsNumber; i++) {
 					writer.print(DELIMITER);
 					writer.print("\"");
 					writer.print(resultSet.getString(i));
 					writer.print("\"");
 				}
-				
+
 				writer.println(DELIMITER);
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		writer.close();
 	}
 
-	// TODO Rainer: vielleicht noch Binds verwenden, damit die Bahn nicht die DB löschen kann, indem sie eine S-Bahnlinie komisch benennt ;). 
+	// TODO Rainer: vielleicht noch Binds verwenden, damit die Bahn nicht die DB
+	// löschen kann, indem sie eine S-Bahnlinie komisch benennt ;).
 	// Eigentlich fängt der Regex das ab, aber sicher ist sicher.
 	protected String createQueryStatementToLoadData(List<String> lines) {
 		StringBuilder statement = new StringBuilder();
@@ -127,11 +127,11 @@ public class DataExport {
 		List<String> lines = new ArrayList<>();
 
 		try (ResultSet result = executeQuery(SQL_SELECT_LINES)) {
-			while(result.next()) {
+			while (result.next()) {
 				lines.add(result.getString("LINE"));
 			}
 		}
-		
+
 		return lines;
 	}
 

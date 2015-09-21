@@ -1,13 +1,13 @@
 package sbahnmucstatustracker;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import sbahnmucstatustracker.io.IOUtility;
 
 public class DatabasePersister {
 
@@ -36,7 +36,8 @@ public class DatabasePersister {
 		try (Connection connection = DriverManager
 				.getConnection(DB_CONNECTION_STRING);
 				Statement statement = connection.createStatement();) {
-			String createStatement = getFileContent(CREATE_STATEMENT_PATH);
+			String createStatement = IOUtility
+					.getFileContent(CREATE_STATEMENT_PATH);
 
 			if (createStatement != null) {
 				statement.execute(createStatement);
@@ -46,35 +47,21 @@ public class DatabasePersister {
 		}
 	}
 
-	private static String getFileContent(String filename) {
-		try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-
-			StringBuilder sb = new StringBuilder();
-			String line = br.readLine();
-
-			while (line != null) {
-				sb.append(line);
-				sb.append(System.lineSeparator());
-				line = br.readLine();
-			}
-			String content = sb.toString();
-			return content;
-		} catch (Exception e) {
-			e.printStackTrace();	
-			return null;
-		}
-	}
-
 	/*
 	 * PERSISTING
 	 */
-	public static void insertStatus(SBahnStatus status) throws ClassNotFoundException, SQLException {
-		String insertStatement = getFileContent(INSERT_STATEMENT_PATH);
+	public static void insertStatus(SBahnStatus status)
+			throws ClassNotFoundException, SQLException {
+		String insertStatement = IOUtility
+				.getFileContent(INSERT_STATEMENT_PATH);
 
-		Connection connection = DriverManager.getConnection(DB_CONNECTION_STRING);
-		PreparedStatement statement = connection.prepareStatement(insertStatement);
+		Connection connection = DriverManager
+				.getConnection(DB_CONNECTION_STRING);
+		PreparedStatement statement = connection
+				.prepareStatement(insertStatement);
 		statement.setString(1, status.getLine());
-		statement.setString(2, SBahnStatus.getTimestampAsString(status.getTimestamp()));
+		statement.setString(2,
+				SBahnStatus.getTimestampAsString(status.getTimestamp()));
 		statement.setInt(3, status.getPercent());
 		statement.execute();
 	}
