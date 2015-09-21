@@ -1,5 +1,6 @@
 package sbahnmucstatustracker.db;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -29,30 +30,35 @@ public class DatabaseReader {
 		List<Object[]> result = new ArrayList<>();
 
 		String queryStatement = createQueryStatementToLoadData(lines);
-		try (Statement statement = Database.GET().createStatement();
-				ResultSet resultSet = statement.executeQuery(queryStatement);) {
+		try (PreparedStatement statement = Database.GET()
+				.createPreparedStatement(queryStatement)) {
 
-			final int columnCount = resultSet.getMetaData().getColumnCount();
+			for (int paramIndex = 1; paramIndex <= lines.size(); paramIndex++) {
+				statement.setString(paramIndex, lines.get(paramIndex));
+			}
 
-			while (resultSet.next()) {
-				Object[] currentRowData = new Object[columnCount];
+			try (ResultSet resultSet = statement.executeQuery(queryStatement);) {
 
-				for (int dbColIndex = 1; dbColIndex <= columnCount; dbColIndex++) {
-					int arrayIndex = dbColIndex - 1;
-					currentRowData[arrayIndex] = resultSet
-							.getObject(dbColIndex);
+				final int columnCount = resultSet.getMetaData()
+						.getColumnCount();
+
+				while (resultSet.next()) {
+					Object[] currentRowData = new Object[columnCount];
+
+					for (int dbColIndex = 1; dbColIndex <= columnCount; dbColIndex++) {
+						int arrayIndex = dbColIndex - 1;
+						currentRowData[arrayIndex] = resultSet
+								.getObject(dbColIndex);
+					}
+
+					result.add(currentRowData);
 				}
-
-				result.add(currentRowData);
 			}
 		}
 
 		return result;
 	}
 
-	// TODO Rainer: vielleicht noch Binds verwenden, damit die Bahn nicht die DB
-	// löschen kann, indem sie eine S-Bahnlinie komisch benennt ;).
-	// Eigentlich fängt der Regex das ab, aber sicher ist sicher.
 	protected static String createQueryStatementToLoadData(List<String> lines) {
 		StringBuilder statement = new StringBuilder();
 		statement.append("SELECT X.TIME, ");
@@ -64,8 +70,7 @@ public class DatabaseReader {
 		statement.append(" FROM (");
 
 		for (int index = 0; index < lines.size(); index++) {
-			String currentLineName = lines.get(index);
-
+			final int paramIndex = index + 1;
 			statement.append("SELECT TIME");
 
 			for (int index2 = 0; index2 < lines.size(); index2++) {
@@ -82,9 +87,8 @@ public class DatabaseReader {
 				statement.append("_PERCENT");
 			}
 
-			statement.append(" FROM HISTORY WHERE LINE = '");
-			statement.append(currentLineName);
-			statement.append("'");
+			statement.append(" FROM HISTORY WHERE LINE = :");
+			statement.append(paramIndex);
 
 			if (index < (lines.size() - 1)) {
 				statement.append(" UNION ALL ");

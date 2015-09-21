@@ -2,6 +2,7 @@ package sbahnmucstatustracker.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -74,5 +75,10 @@ public class Database {
 
 	public Statement createStatement() throws SQLException {
 		return getConnection().createStatement();
+	}
+
+	public PreparedStatement createPreparedStatement(String sql)
+			throws SQLException {
+		return getConnection().prepareStatement(sql);
 	}
 }

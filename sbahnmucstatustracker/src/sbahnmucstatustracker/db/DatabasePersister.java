@@ -18,8 +18,8 @@ public class DatabasePersister {
 		String insertStatement = IOUtility
 				.getFileContent(INSERT_STATEMENT_PATH);
 
-		try (PreparedStatement statement = Database.GET().getConnection()
-				.prepareStatement(insertStatement)) {
+		try (PreparedStatement statement = Database.GET()
+				.createPreparedStatement(insertStatement)) {
 			statement.setString(1, status.getLine());
 			statement.setString(2,
 					SBahnStatus.getTimestampAsString(status.getTimestamp()));
