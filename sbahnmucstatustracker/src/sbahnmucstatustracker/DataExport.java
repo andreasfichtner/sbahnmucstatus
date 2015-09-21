@@ -77,6 +77,8 @@ public class DataExport {
 		writer.close();
 	}
 
+	// TODO Rainer: vielleicht noch Binds verwenden, damit die Bahn nicht die DB löschen kann, indem sie eine S-Bahnlinie komisch benennt ;). 
+	// Eigentlich fängt der Regex das ab, aber sicher ist sicher.
 	protected String createQueryStatementToLoadData(List<String> lines) {
 		StringBuilder statement = new StringBuilder();
 		statement.append("SELECT X.TIME, ");
