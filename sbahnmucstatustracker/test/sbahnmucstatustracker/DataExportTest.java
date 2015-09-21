@@ -16,10 +16,9 @@ public class DataExportTest {
 		lines.add("S1");
 		lines.add("S2");
 
-		final String expectedStatement = "SELECT X.TIME, MAX(S1.PERCENT), MAX(S2.PERCENT) FROM (SELECT S1.PERCENT AS S1, 0 AS S2 FROM HISTORY WHERE LINE = 'S1' UNION ALL SELECT 0 AS S1, S2.PERCENT AS S2 FROM HISTORY WHERE LINE = 'S2') X GROUP BY X.TIME";
+		final String expectedStatement = "SELECT X.TIME, MAX(S1_PERCENT) AS S1_PERCENT, MAX(S2_PERCENT) AS S2_PERCENT FROM (SELECT TIME, PERCENT AS S1_PERCENT, 0 AS S2_PERCENT FROM HISTORY WHERE LINE = 'S1' UNION ALL SELECT TIME, 0 AS S1_PERCENT, PERCENT AS S2_PERCENT FROM HISTORY WHERE LINE = 'S2') X GROUP BY X.TIME";
 		String actualStatement = export.createQueryStatementToLoadData(lines);
 
-		System.err.println(actualStatement);
 		assertEquals(expectedStatement, actualStatement);
 	}
 }
