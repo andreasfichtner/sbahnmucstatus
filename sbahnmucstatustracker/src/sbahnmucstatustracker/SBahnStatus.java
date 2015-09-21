@@ -7,7 +7,7 @@ public class SBahnStatus {
 	int percent;
 	String line;
 	Calendar timestamp;
-	
+
 	public int getPercent() {
 		return percent;
 	}
@@ -38,12 +38,13 @@ public class SBahnStatus {
 		this.timestamp.setTimeInMillis(time);
 		this.percent = percent;
 	}
-	
-	public String shortInfo() {
+
+	@Override
+	public String toString() {
 		return String.format("SBahnStatus: Line %s: %d", line, percent);
 	}
-	
-	public static String getTimestampAsString(Calendar c) {	
+
+	public static String getTimestampAsString(Calendar c) {
 		SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 		return format.format(c.getTime());
 	}

@@ -23,6 +23,8 @@ public class SBahnMucStatusTracker {
 	public void work() throws SQLException {
 
 		while (!stopped) {
+			System.out.print(".");
+
 			LinkedList<SBahnStatus> list = new LinkedList<>();
 			try {
 				String website = DataReceiver.getStatusInfoFromInternet();
