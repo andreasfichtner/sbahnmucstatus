@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import sbahnmucstatustracker.db.DatabasePersister;
+
 public class DataExport {
 
 	private static final String SQL_SELECT_LINES = "SELECT DISTINCT LINE FROM HISTORY ORDER BY LINE";

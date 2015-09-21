@@ -4,33 +4,36 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
+import sbahnmucstatustracker.db.DatabasePersister;
+
 public class SBahnMucStatusTracker {
 
 	// 1 Minute interval
-	private static final long INTERVAL = 60000; 
+	private static final long INTERVAL = 60000;
 	static boolean stopped = false;
-	
-	public static void main(String[] args) throws IOException, ClassNotFoundException {
+
+	public static void main(String[] args) throws IOException,
+			ClassNotFoundException {
 		Class.forName("org.sqlite.JDBC");
 		SBahnMucStatusTracker tracker = new SBahnMucStatusTracker();
 		tracker.work();
 	}
-	
+
 	public void work() {
-		
+
 		// create db if it does not exist
 		DatabasePersister.ensureDatabaseCreated();
-		
-		while(!stopped) {
+
+		while (!stopped) {
 			LinkedList<SBahnStatus> list = new LinkedList<>();
-			try { 
+			try {
 				String website = DataReceiver.getStatusInfoFromInternet();
 				list.addAll(DataParser.parse(website));
+			} catch (IOException ioe) {
+				System.err.println("Error occured at "
+						+ System.currentTimeMillis() + ":" + ioe.getMessage());
 			}
-			catch(IOException ioe) {
-				System.err.println("Error occured at " + System.currentTimeMillis() + ":" + ioe.getMessage());
-			}
-			
+
 			for (SBahnStatus status : list) {
 				try {
 					DatabasePersister.insertStatus(status);
@@ -40,7 +43,7 @@ public class SBahnMucStatusTracker {
 					e.printStackTrace();
 				}
 			}
-			
+
 			try {
 				Thread.sleep(INTERVAL);
 			} catch (InterruptedException e) {

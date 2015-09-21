@@ -1,4 +1,4 @@
-package sbahnmucstatustracker;
+package sbahnmucstatustracker.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import sbahnmucstatustracker.SBahnStatus;
 import sbahnmucstatustracker.io.IOUtility;
 
 public class DatabasePersister {
